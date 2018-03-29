@@ -1,5 +1,6 @@
 {
     "dbConnection": "mongodb://localhost:27017/wesleyWallet",
+    //"dbConnection": "mongodb://esfera:esfera@127.0.0.1:27017/testdb",
     "bcryptSaltRounds": 10,
     "btc": {
         "protocol": "http",
