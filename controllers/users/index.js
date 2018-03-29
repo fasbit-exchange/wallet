@@ -5,14 +5,14 @@ let walletService = require('../../lib/wallet');
 exports.login = async (req, res, next) => {
 
     try {
-        let user = await uModel.loginUser(req.body);
+        let user = await uModel.loginUser(req.body,'user');
         req.session.user = user;
         req.session.save(console.log)
-        res.redirect('/users/dashboard');
+        res.redirect('/dashboard');
     }
     catch (ex) {
         req.session.login_error = 'Invalid Mail or Passowrd.';
-        res.redirect('/users/login');
+        res.redirect('/');
     }
 
 };
@@ -32,12 +32,12 @@ exports.register = async (req, res, next) => {
         wallets.push({ type: 'multisig', name: user._id + '_wallet', user: user._id, coin_type: 'bch', main_address: walObj.bch, addresses: [walObj.bch.address] });
         await wModel.insertMany(wallets);
         req.session.register_sucesss = 'User has been registerd successfully.';
-        res.redirect('/users/login')
+        res.redirect('/')
     }
     catch (ex) {
         console.log(ex)
         req.session.register_error = 'Registration failed';
-        res.redirect('/users/register');
+        res.redirect('/register');
     }
 };
 exports.dashboard = async (req, res, next) => {
@@ -86,7 +86,7 @@ exports.send = async (req, res, next) => {
 exports.refreshWallet = async (req, res, next) => {
     try {
         await updateWalletsAndGetBalance(req.session.user._id);
-        res.redirect('/users/receive');
+        res.redirect('/receive');
     }
     catch (ex) {
         return next(ex);
@@ -113,10 +113,10 @@ exports.transact = async (req, res, next) => {
         transaction.coin_type = req.body.coin_type;
         await transaction.save();
         req.session.transaction_status = 'success';
-        res.redirect('/users/transaction');
+        res.redirect('/transaction');
     }
     catch (ex) {
         req.session.transaction_status = 'fail';
-        res.redirect('/users/transaction');
+        res.redirect('/transaction');
     }
 }

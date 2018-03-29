@@ -47,8 +47,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(session({
-    secret: 'keyboard cat',
-    cookie: {}
+    secret:'keyboard cat',
+  resave: true,
+  //saveUninitialized: true,
+  cookie: { maxAge: 60*1000,expires:false }
 }));
 app.use('/public', express.static('public'));
 

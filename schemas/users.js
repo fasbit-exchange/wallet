@@ -26,11 +26,11 @@ var tableSchema = new Schema({
             enum: ['android', 'ios', 'web']
         }
     }],
-    roles: [{
-        type: Array,
+    roles:{
+        type: String,
+        enum: ['admin', 'user'],
         default: 'user',
-        enum: ['admin', 'user']
-    }],
+    },
     is_deleted: {
         type: Boolean,
         default: false
@@ -82,8 +82,8 @@ tableSchema.method('getAccessTokenObject', function (platform) {
 tableSchema.method('compareSync', function (password) {
     return bcrypt.compareSync(password, this.password)
 })
-tableSchema.static('loginUser', async function (data) {
-    let user = await this.findOne({ 'email': data.email, 'is_deleted': false });
+tableSchema.static('loginUser', async function (data,role) {
+    let user = await this.findOne({ 'email': data.email,'is_deleted': false,'roles':role });
     if (!user) throw new Error('Invalid email ID.');
     if (!user.compareSync(data.password)) throw new Error('Invalid Password.');
     return user;
@@ -91,7 +91,7 @@ tableSchema.static('loginUser', async function (data) {
 tableSchema.static('getUserAndWallets', async function () {
     let user = await this
         .aggregate()
-        .match({ 'is_deleted': false, 'roles': { '$ne': ['admin'] } })
+        .match({ 'is_deleted': false, 'roles': { '$ne':'admin'} })
         .lookup({ 'from': 'wallets', 'localField': '_id', 'foreignField': 'user', 'as': 'wallets' })
         .exec();
     return user;
