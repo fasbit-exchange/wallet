@@ -13,7 +13,9 @@ let config = require('config');
 mongoose.connect(config.get('dbConnection'));
 
 //settings
-app.set('port', process.env.PORT || 3000);
+//app.set('port', process.env.PORT || 3000);  // orginal
+app.set('port', process.env.PORT || 80);  // orginal
+
 app.set('views', path.join(__dirname, 'views'));
 
 //view engine & main template
